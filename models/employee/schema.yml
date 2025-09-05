@@ -10,13 +10,12 @@ models:
           - unique
           - not_null
           - accepted_values:
-              values: ['1','2','3','4','5', '6']
+              values: ['1','2','3','4','5','6']
               config:
                 severity: warn
       - name: emp_salary
         tests:
           - salary_check
-
    
 sources:
   - name: employee
