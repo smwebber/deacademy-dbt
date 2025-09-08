@@ -25,6 +25,12 @@ clean-targets:         # directories to be removed by `dbt clean`
   - "dbt_packages"
 
 
+seeds:
+  country_code:
+    enabled: true
+    schema: country_code
+    quote_columns: false
+
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
 
