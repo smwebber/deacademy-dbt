@@ -10,12 +10,12 @@ models:
           - unique
           - not_null
           - accepted_values:
-              values: ['1','2','3','4','5']
+              values: ['1','2','3','4','5','6']
               config:
                 severity: warn
       - name: emp_salary
         tests:
-          - value_check
+          - salary_check
   - name: customer
     description: "DBT Model for the customer table"
   - name: customer_vw
@@ -26,6 +26,14 @@ models:
     description: "DBT Model for the product table"
   - name: purchase
     description: "DBT Model for the purchase table"
+  - name: clean_orders
+    description: "DBT Model for the clean Orders"
+  - name: final_order
+    description: "DBT Model for the final orders"
+  - name: concat_address
+    description: "DBT Model for concat address"
+  - name: concat_name
+    description: "DBT Model for concat name"
    
 sources:
   - name: employee
@@ -53,3 +61,18 @@ sources:
     schema: PUBLIC
     tables:
       - name: PURCHASE_SRC
+  - name: orders
+    database: DBT_DB
+    schema: PUBLIC
+    tables:
+      - name: BASE_ORDERS
+  - name: patient
+    database: DBT_DB
+    schema: PUBLIC
+    tables:
+      - name: PATIENT_SRC
+  - name: country
+    database: DBT_DB
+    schema: PUBLIC
+    tables:
+      - name: SESSION_SRC
