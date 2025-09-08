@@ -35,8 +35,21 @@ clean-targets:         # directories to be removed by `dbt clean`
 # continue to be built as views. These settings can be overridden in the individual model files
 # using the `{{ config(...) }}` macro.
 
-# models:
-#   my_new_project:
-#     # Applies to all files under models/example/
-#     example:
-#       +materialized: table
+models:
+  my_new_project:
+    models:
+      +materialized: table
+      customer:
+        customer_vw:
+          +materialized: view
+      orders:
+        clean_orders:
+          +materialized: ephemeral
+      product:
+        +materialized: incremental
+      purchase:
+        +materialized: incremental
+      sales:
+        +materialized: incremental
+      
+    
