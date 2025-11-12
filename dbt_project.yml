@@ -25,12 +25,6 @@ clean-targets:         # directories to be removed by `dbt clean`
   - "dbt_packages"
 
 
-seeds:
-  country_code:
-    enabled: true
-    schema: country_code
-    quote_columns: false
-
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
 
@@ -45,17 +39,9 @@ models:
   my_new_project:
     models:
       +materialized: table
-      customer:
-        customer_vw:
+      test:
+        test_vw:
           +materialized: view
-      orders:
-        clean_orders:
-          +materialized: ephemeral
-      product:
-        +materialized: incremental
-      purchase:
-        +materialized: incremental
-      sales:
-        +materialized: incremental
+
       
     
