@@ -7,12 +7,7 @@ models:
     columns:
       - name: country_id
         tests:
-          - unique
           - not_null
-          - accepted_values:
-              values: ['1','2','3','4','5','6']
-              config:
-                severity: warn
       - name: common_name
         tests:
           - not_null

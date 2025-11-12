@@ -7,21 +7,22 @@
 
 WITH country_json AS
 (
-    SELECT 
-        data:cca3::STRING AS country_id
-        , data:name:common::STRING AS common_name
-        , data:name:official::STRING AS official_name
+    SELECT
+        countries.value:cca3::STRING AS country_id 
+        , countries.value:name:common::STRING AS common_name
+        , countries.value:name:official::STRING AS official_name
         , capital.value::STRING AS capital
-        , data:region::STRING AS region
-        , data:population AS population
+        , countries.value:region::STRING AS region
+        , countries.value:population AS population
         , currency.value:name::STRING AS currency_name
         , currency.value:symbol::STRING AS currency_symbol
         , language.value::STRING AS language
-        , data:independent AS independent
+        , countries.value:independent AS independent
     FROM {{source('country', 'COUNTRY_JSON')}} ,
-    LATERAL FLATTEN (INPUT => data:capital) AS capital ,
-    LATERAL FLATTEN (INPUT => data:currencies) AS currency ,
-    LATERAL FLATTEN (INPUT => data:languages) AS language
+    LATERAL FLATTEN (INPUT => data) AS countries ,
+    LATERAL FLATTEN (INPUT => countries.value:capital) AS capital ,
+    LATERAL FLATTEN (INPUT => countries.value:currencies) AS currency ,
+    LATERAL FLATTEN (INPUT => countries.value:languages) AS language
 )
 
 
