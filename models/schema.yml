@@ -18,8 +18,8 @@ models:
           - not_null
    
 sources:
-  - name: test
+  - name: country
     database: GLUE_DB
     schema: PUBLIC
     tables:
-      - name: TEST_RAW
+      - name: COUNTRY_JSON
