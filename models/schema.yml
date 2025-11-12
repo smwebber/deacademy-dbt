@@ -2,10 +2,10 @@ version: 2
 
 
 models:
-  - name: test
-    description: "DBT Model for employee table"
+  - name: country
+    description: "DBT Model for country table"
     columns:
-      - name: test_id
+      - name: country_id
         tests:
           - unique
           - not_null
@@ -13,13 +13,13 @@ models:
               values: ['1','2','3','4','5','6']
               config:
                 severity: warn
-      - name: status
+      - name: common_name
         tests:
           - not_null
    
 sources:
   - name: country
-    database: GLUE_DB
+    database: GLUEDB
     schema: PUBLIC
     tables:
       - name: COUNTRY_JSON
