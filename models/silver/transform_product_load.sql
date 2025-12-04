@@ -22,6 +22,7 @@ WITH transform AS (
         , product_dimensions
         , 'EST' AS time_zone
         , 'PRODUCT' AS source_sys_name
+        , 'STANDARD' AS instnc_st_nm
         , CURRENT_SESSION() AS process_id
         , 'TRANSFORM_LOAD' AS process_name
         , insert_dts 

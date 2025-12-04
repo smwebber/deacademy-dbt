@@ -6,3 +6,8 @@ sources:
       schema: BRONZE
       tables:
         - name: WORK_PRODUCT_COPY
+    - name: xfm
+      database: PC_DBT_DB
+      schema: SILVER
+      tables:
+        - name: WORK_PRODUCT_TRANSFORM

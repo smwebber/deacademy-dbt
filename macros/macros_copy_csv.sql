@@ -1,6 +1,7 @@
 {% macro macros_copy_csv(table_name) %}
 
 DELETE FROM {{var('rawhist_db')}}.{{var('wrk_schema')}}.{{table_name}}
+;
 
 COPY INTO {{var('rawhist_db')}}.{{var('wrk_schema')}}.{{table_name}}
 FROM (
@@ -18,10 +19,10 @@ FROM (
         CURRENT_TIMESTAMP() AS INSERT_DTS,
         CURRENT_TIMESTAMP() AS UPDATE_DTS,
         metadata$filename AS SOURCE_FILE_NAME,
-        metadata$file_row_numbver AS SOURCE_FILE_ROW_NUMBER
+        metadata$file_row_number AS SOURCE_FILE_ROW_NUMBER
     FROM @{{var('stage_name')}}
 )
-FILE_FORMAT = {{var('file_format_json')}}
+FILE_FORMAT = {{var('file_format')}}
 PURGE = {{var('purge_status')}}
 FORCE = TRUE
 ;
