@@ -1,0 +1,45 @@
+version: 2
+
+models:
+  - name: store
+    description: "DBT Model for store table"
+    columns:
+      - name: store_id
+        tests:
+          - unique
+          - not_null
+  - name: department
+    description: "DBT Model for department table"
+    columns:
+      - name: "(store_id||department_id||date)"
+        description: "Composite primary key for table"
+        tests:
+          - unique
+          - not_null
+  - name: fact
+    description: "DBT Model for fact table"
+    columns:
+      - name: "(store_id||date)"
+        description: "Composite primary key for table"
+        tests:
+          - unique
+          - not_null
+
+sources:
+    - name: bronze
+      database: WALMART_DB
+      schema: BRONZE
+      tables:
+        - name: STORE_SOURCE
+        - name: STORE_CURRENT
+        - name: DEPARTMENT_SOURCE
+        - name: DEPARTMENT_CURRENT
+        - name: FACT_SOURCE
+        - name: FACT_CURRENT
+    - name: silver
+      database: WALMART_DB
+      schema: SILVER
+      tables:
+        - name: STORE
+        - name: DEPARTMENT
+        - name: FACT
