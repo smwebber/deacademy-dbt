@@ -7,7 +7,7 @@ version: '1.0.0'
 config-version: 2
 
 # This setting configures which "profile" dbt uses for this project.
-profile: 'default'
+profile: 'dev'
 
 vars:
   db-name: WALMART_DB
@@ -43,10 +43,10 @@ clean-targets:         # directories to be removed by `dbt clean`
 models:
   walmart_medallion:
     silver:
-      schema: silver
+      +schema: silver
       +materialized: table
     gold:
-      schema: gold
+      +schema: gold
       +materialized: view
       
     

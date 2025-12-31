@@ -18,14 +18,14 @@ CREATE OR REPLACE TABLE {{var('db-name')}}.{{var('work-schema')}}.DEPARTMENT_CUR
 INSERT INTO {{var('db-name')}}.{{var('work-schema')}}.DEPARTMENT_CURRENT
 SELECT
     a.*
-FROM {{source('bronze', table_name)}} a
+FROM {{source('bronze', 'DEPARTMENT_SOURCE')}} a
 JOIN (
     SELECT
         store_id
         , department_id
         , date
         , MAX(update_ts) AS max_update_ts
-    FROM {{source('bronze', table_name)}}
+    FROM {{source('bronze', 'DEPARTMENT_SOURCE')}}
     GROUP BY store_id, department_id, date
 ) b
     ON a.store_id = b.store_id

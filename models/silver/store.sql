@@ -3,7 +3,7 @@
         "materialized": 'table',
         "transient": true,
         "alias": 'STORE',
-        "pre_hook": create_store_current('STORE_SOURCE'),
+        "pre-hook": create_store_current(),
         "schema": 'SILVER'
     })
 }}
@@ -21,4 +21,3 @@ WITH sanitized_store_data AS (
 )
 
 SELECT * FROM sanitized_store_data
-;

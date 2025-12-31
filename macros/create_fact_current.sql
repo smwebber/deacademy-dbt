@@ -25,13 +25,13 @@ CREATE OR REPLACE TABLE {{var('db-name')}}.{{var('work-schema')}}.FACT_CURRENT (
 INSERT INTO {{var('db-name')}}.{{var('work-schema')}}.FACT_CURRENT
 SELECT
     a.*
-FROM {{source('bronze', table_name)}} a
+FROM {{source('bronze', 'FACT_SOURCE')}} a
 JOIN (
     SELECT
         store_id
         , date
         , MAX(update_ts) AS max_update_ts 
-    FROM {{source('bronze', table_name)}}
+    FROM {{source('bronze', 'FACT_SOURCE')}}
     GROUP BY store_id, date
 ) b
     ON a.store_id = b.store_id 
