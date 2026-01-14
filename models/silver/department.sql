@@ -1,14 +1,14 @@
 {{
     config({
-        "materialized": 'table',
-        "transient": true,
+        "materialized": 'incremental',
+        "unique-key": 'store_id||department_id||date'
+        "incremental-strategy": 'insert',
         "alias": 'DEPARTMENT',
-        "pre_hook": create_department_current('DEPARTMENT_SOURCE'),
         "schema": 'SILVER'
     })
 }}
 
-WITH sanitized_department_data AS(
+WITH department_data AS (
     SELECT
         store_id
         , department_id
@@ -18,9 +18,10 @@ WITH sanitized_department_data AS(
         , insert_ts
         , update_ts
         , CURRENT_SESSION() AS process_id
-    FROM {{source('bronze', 'DEPARTMENT_CURRENT')}}
+        , CURRENT_TIMESTAMP() AS version_start_date
+        , LEAD(update_ts, 1) OVER (PARTITION BY store_id, department_id, date ORDER BY update_ts ASC) AS version_end_date
+    FROM {{source('bronze', 'DEPARTMENT_SOURCE')}}
     WHERE is_deleted = FALSE
 )
 
-SELECT * FROM sanitized_department_data
-;
+SELECT * FROM department_data

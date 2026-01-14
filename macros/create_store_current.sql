@@ -1,4 +1,4 @@
-{% macro create_store_current() %}
+{% macro create_store_current(table_name) %}
 
 USE ROLE ACCOUNTADMIN
 ;
@@ -16,12 +16,12 @@ CREATE OR REPLACE TABLE {{var('db-name')}}.{{var('work-schema')}}.STORE_CURRENT 
 INSERT INTO {{var('db-name')}}.{{var('work-schema')}}.STORE_CURRENT
 SELECT
     a.*
-FROM {{source('bronze', 'STORE_CURRENT')}} a
+FROM {{var('db-name')}}.{{var('work-schema')}}.{{table_name}} a
 JOIN (
     SELECT
         store_id
         , MAX(update_ts) AS max_update_ts
-    FROM {{source('bronze', 'STORE_SOURCE')}}
+    FROM {{var('db-name')}}.{{var('work-schema')}}.{{table_name}}
     GROUP BY store_id
 ) b
     ON a.store_id = b.store_id

@@ -11,3 +11,10 @@ sources:
       - name: DEPARTMENT_CURRENT
       - name: FACT_SOURCE
       - name: FACT_CURRENT
+  - name: silver
+    database: WALMART_DB
+    schema: SILVER
+    tables:
+      - name: STORE
+      - name: DEPARTMENT
+      - name: FACT

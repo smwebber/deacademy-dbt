@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: gold
+    database: WALMART_DB
+    schema: GOLD
+    tables:
+      - name: WALMART_DATE_DIM
+      - name: WALMART_STORE_DIM
+      - name: WALMART_FACT_TABLE
