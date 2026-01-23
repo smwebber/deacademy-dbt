@@ -6,11 +6,8 @@ sources:
     schema: BRONZE
     tables:
       - name: STORE_SOURCE
-      - name: STORE_CURRENT
       - name: DEPARTMENT_SOURCE
-      - name: DEPARTMENT_CURRENT
       - name: FACT_SOURCE
-      - name: FACT_CURRENT
   - name: silver
     database: WALMART_DB
     schema: SILVER
