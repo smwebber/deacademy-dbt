@@ -1,7 +1,7 @@
 {{
     config({
         "materialized": 'incremental',
-        "unique-key": 'store_id||department_id||date'
+        "unique-key": 'store_id||department_id||date',
         "incremental-strategy": 'insert',
         "alias": 'DEPARTMENT',
         "schema": 'SILVER'

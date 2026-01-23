@@ -1,10 +1,9 @@
 {{
     config({
         "materialized": 'incremental',
-        "unique-key": 'store_id'
+        "unique-key": 'store_id',
         "incremental-strategy": 'insert',
         "alias": 'STORE',
-        -- "pre-hook": create_store_current('STORE_SOURCE'),
         "schema": 'SILVER'
     })
 }}

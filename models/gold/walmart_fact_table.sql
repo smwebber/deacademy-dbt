@@ -28,7 +28,18 @@ WITH store_facts AS (
         , f.insert_ts
         , f.update_ts
         , CURRENT_TIMESTAMP() AS version_start_date
-        , LEAD(f.update_ts, 1) OVER (PARTITION BY f.store_id, d.department_id, f.date ORDER BY f.update_ts) AS version_end_date
+        , CASE
+            WHEN COALESCE(s.version_end_date, CURRENT_TIMESTAMP()) > COALESCE(d.version_end_date, CURRENT_TIMESTAMP()) 
+                AND COALESCE(s.version_end_date, CURRENT_TIMESTAMP()) > COALESCE(f.version_end_date, CURRENT_TIMESTAMP())
+            THEN s.version_end_date
+            WHEN COALESCE(d.version_end_date, CURRENT_TIMESTAMP()) > COALESCE(s.version_end_date, CURRENT_TIMESTAMP()) 
+                AND COALESCE(d.version_end_date, CURRENT_TIMESTAMP()) > COALESCE(f.version_end_date, CURRENT_TIMESTAMP())
+            THEN d.version_end_date
+            WHEN COALESCE(f.version_end_date, CURRENT_TIMESTAMP()) > COALESCE(d.version_end_date, CURRENT_TIMESTAMP()) 
+                AND COALESCE(f.version_end_date, CURRENT_TIMESTAMP()) > COALESCE(s.version_end_date, CURRENT_TIMESTAMP())
+            THEN f.version_end_date
+            ELSE NULL
+        END AS version_end_date
     FROM {{ source('silver', 'DEPARTMENT') }} d
     JOIN {{ source('silver', 'STORE') }} s
         ON d.store_id = s.store_id
