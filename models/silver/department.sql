@@ -2,7 +2,7 @@
     config({
         "materialized": 'incremental',
         "unique-key": 'store_id||department_id||date',
-        "incremental-strategy": 'insert',
+        "incremental-strategy": 'merge',
         "alias": 'DEPARTMENT',
         "schema": 'SILVER'
     })
