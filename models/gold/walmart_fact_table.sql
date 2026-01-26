@@ -48,16 +48,16 @@ WITH store_facts AS (
             AND d.date = f.date
     JOIN {{ source('silver', 'DATE') }} dates
         ON d.date = dates.date
-    {% if is_incremental() %}
-    WHERE (store_id, department_id, date_id, version_end_date) NOT IN (
-        SELECT
-            store_id
-            , department_id
-            , date_id
-            , version_end_date
-        FROM {{ this }}
-    )
-    {% endif %}
 )
 
 SELECT * FROM store_facts
+{% if is_incremental() %}
+WHERE (store_id, department_id, date_id, version_end_date) NOT IN (
+    SELECT
+        store_id
+        , department_id
+        , date_id
+        , version_end_date
+    FROM {{ this }}
+)
+{% endif %}

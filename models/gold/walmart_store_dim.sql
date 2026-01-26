@@ -20,7 +20,7 @@ WITH stores AS (
     JOIN {{ source('silver', 'DEPARTMENT') }} d
         ON s.store_id = d.store_id
     {% if is_incremental() %}
-    WHERE (store_id, department_id) NOT IN (
+    WHERE (s.store_id, d.department_id) NOT IN (
         SELECT
             store_id
             , department_id
