@@ -15,3 +15,4 @@ sources:
       - name: STORE
       - name: DEPARTMENT
       - name: FACT
+      - name: DATE

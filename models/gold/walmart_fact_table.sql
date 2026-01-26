@@ -1,7 +1,7 @@
 {{
     config({
         "materialized": 'incremental',
-        "unique-key": 'store_id||department_id||date_id',
+        "unique-key": 'store_id||department_id||date_id||version_end_date',
         "incremental-strategy": 'insert',
         "alias": 'WALMART_FACT_TABLE',
         "schema": 'GOLD'
@@ -29,14 +29,14 @@ WITH store_facts AS (
         , f.update_ts
         , CURRENT_TIMESTAMP() AS version_start_date
         , CASE
-            WHEN COALESCE(s.version_end_date, CURRENT_TIMESTAMP()) > COALESCE(d.version_end_date, CURRENT_TIMESTAMP()) 
-                AND COALESCE(s.version_end_date, CURRENT_TIMESTAMP()) > COALESCE(f.version_end_date, CURRENT_TIMESTAMP())
+            WHEN COALESCE(s.version_end_date, CURRENT_TIMESTAMP()) < COALESCE(d.version_end_date, CURRENT_TIMESTAMP()) 
+                AND COALESCE(s.version_end_date, CURRENT_TIMESTAMP()) < COALESCE(f.version_end_date, CURRENT_TIMESTAMP())
             THEN s.version_end_date
-            WHEN COALESCE(d.version_end_date, CURRENT_TIMESTAMP()) > COALESCE(s.version_end_date, CURRENT_TIMESTAMP()) 
-                AND COALESCE(d.version_end_date, CURRENT_TIMESTAMP()) > COALESCE(f.version_end_date, CURRENT_TIMESTAMP())
+            WHEN COALESCE(d.version_end_date, CURRENT_TIMESTAMP()) < COALESCE(s.version_end_date, CURRENT_TIMESTAMP()) 
+                AND COALESCE(d.version_end_date, CURRENT_TIMESTAMP()) < COALESCE(f.version_end_date, CURRENT_TIMESTAMP())
             THEN d.version_end_date
-            WHEN COALESCE(f.version_end_date, CURRENT_TIMESTAMP()) > COALESCE(d.version_end_date, CURRENT_TIMESTAMP()) 
-                AND COALESCE(f.version_end_date, CURRENT_TIMESTAMP()) > COALESCE(s.version_end_date, CURRENT_TIMESTAMP())
+            WHEN COALESCE(f.version_end_date, CURRENT_TIMESTAMP()) < COALESCE(d.version_end_date, CURRENT_TIMESTAMP()) 
+                AND COALESCE(f.version_end_date, CURRENT_TIMESTAMP()) < COALESCE(s.version_end_date, CURRENT_TIMESTAMP())
             THEN f.version_end_date
             ELSE NULL
         END AS version_end_date
@@ -46,8 +46,18 @@ WITH store_facts AS (
     JOIN {{ source ('silver', 'FACT') }} f
         ON d.store_id = f.store_id
             AND d.date = f.date
-    JOIN {{ source('gold', 'WALMART_DATE_DIM') }} dates
+    JOIN {{ source('silver', 'DATE') }} dates
         ON d.date = dates.date
+    {% if is_incremental() %}
+    WHERE (store_id, department_id, date_id, version_end_date) NOT IN (
+        SELECT
+            store_id
+            , department_id
+            , date_id
+            , version_end_date
+        FROM {{ this }}
+    )
+    {% endif %}
 )
 
 SELECT * FROM store_facts

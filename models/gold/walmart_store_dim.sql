@@ -2,7 +2,7 @@
     config({
         "materialized": 'incremental',
         "unique-key": 'store_id||department_id',
-        "incremental-strategy": 'merge',
+        "incremental-strategy": 'delete+insert',
         "alias": 'WALMART_STORE_DIM',
         "schema": 'GOLD'
     })
@@ -15,10 +15,19 @@ WITH stores AS (
         , s.type
         , s.size
         , s.insert_ts
-        , s.update_ts
+        , MAX(s.update_ts)
     FROM {{ source('silver', 'STORE') }} s
     JOIN {{ source('silver', 'DEPARTMENT') }} d
         ON s.store_id = d.store_id
+    {% if is_incremental() %}
+    WHERE (store_id, department_id) NOT IN (
+        SELECT
+            store_id
+            , department_id
+        FROM {{ this }}
+    )
+    {% endif %}
+    GROUP BY s.store_id, d.department_id, s.type, s.size, s.insert_ts
 )
 
 SELECT * FROM stores
